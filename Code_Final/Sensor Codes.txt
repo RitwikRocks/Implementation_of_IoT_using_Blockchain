@@ -1,0 +1,105 @@
+DHT11 Temperature and Humidity Sensor
+
+import Adafruit_DHT
+import time
+ 
+DHT_SENSOR = Adafruit_DHT.DHT11
+DHT_PIN = 4
+ 
+while True:
+    humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+    if humidity is not None and temperature is not None:
+        print("Temp={0:0.1f}C Humidity={1:0.1f}%".format(temperature, humidity))
+    else:
+        print("Sensor failure. Check wiring.");
+    time.sleep(2);
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+PWM LED CONTROL
+
+
+mport RPi.GPIO as GPIO
+import time 
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(11,GPIO.OUT)
+P=GPIO.PWM(11,100)
+P.start(0)
+while True:
+    for x in range(0,100,1):
+        P.ChangeDutyCycle(x)
+        time.sleep(0.05)
+    for x in range(100,0,-1):
+        P.ChangeDutyCycle(x)
+        time.sleep(0.05)
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+LED Blinking
+
+
+import RPi.GPIO as GPIO
+from time import sleep
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(26,GPIO.OUT,initial=GPIO.LOW)
+while True:
+	GPIO.output(26,GPIO.HIGH)
+	sleep(1)
+	GPIO.output(26,GPIO.LOW)
+	sleep(1)
+-----------------------------------------------------------------------------------------------------------------------------
+
+Sound Sensor
+
+import RPi.GPIO as GPIO
+import time
+#GPIO.setwarnings(False)
+channel=17
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(channel,GPIO.IN)
+
+def callback(channel):
+	if GPIO.input(channel):
+		print("Sound Detected")
+	else:
+		print("Sound Detected")
+		
+GPIO.add_event_detect(channel,GPIO.BOTH, bouncetime=300)
+GPIO.add_event_callback(channel,callback)
+
+while True:
+	time.sleep(1)
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+IR SENSOR
+
+import RPi.GPIO as GPIO
+import time
+
+sensor_pin=23
+led_pin=26
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(sensor_pin,GPIO.IN)
+GPIO.setup(led_pin,GPIO.OUT)
+print("YES")
+try:
+    while True:
+        if GPIO.input(sensor_pin):
+            GPIO.output(led_pin,False)
+            print("detect")
+            while GPIO.input(sensor_pin):
+                time.sleep(0.2)
+        else:
+            GPIO.output(led_pin,True)
+except KeyboardInterrupt:
+    GPIO.cleanup()
